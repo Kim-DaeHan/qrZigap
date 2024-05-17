@@ -15,7 +15,7 @@ function generateKeys() {
   };
 }
 
-function encryptMessage(msg: string, prKey: string) {
+function sign(msg: string, prKey: string) {
   const ec = new EC("secp256k1");
   const key = ec.keyFromPrivate(prKey, "hex");
   // const encrypted = key.encrypt(msg);
@@ -23,7 +23,7 @@ function encryptMessage(msg: string, prKey: string) {
   return encrypted;
 }
 
-function decryptMessage(msg: string, sig: EC.Signature, pubKey: string) {
+function verify(msg: string, sig: EC.Signature, pubKey: string) {
   const ec = new EC("secp256k1");
   const key = ec.keyFromPublic(pubKey, "hex");
   // const encrypted = key.encrypt(msg);
@@ -126,8 +126,8 @@ function WebSocketComponent() {
   const { privateKey, publicKey } = generateKeys();
   console.log("test222: ", privateKey, publicKey);
   const msg = "hello hans";
-  const sig = encryptMessage(msg, privateKey);
-  const decMsg = decryptMessage(msg, sig, publicKey);
+  const sig = sign(msg, privateKey);
+  const decMsg = verify(msg, sig, publicKey);
 
   console.log("sig: ", sig);
   console.log("decMsg: ", decMsg);
