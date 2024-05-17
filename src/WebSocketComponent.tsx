@@ -1,6 +1,35 @@
 import CryptoJS from "crypto-js";
 import { useState } from "react";
 import base64 from "base-64";
+import { ec as EC } from "elliptic";
+
+function generateKeys() {
+  const ec = new EC("secp256k1");
+  const keyPair = ec.genKeyPair();
+  const privateKey = keyPair.getPrivate("hex");
+  const publicKey = keyPair.getPublic("hex");
+
+  return {
+    privateKey,
+    publicKey,
+  };
+}
+
+function encryptMessage(msg: string, prKey: string) {
+  const ec = new EC("secp256k1");
+  const key = ec.keyFromPrivate(prKey, "hex");
+  // const encrypted = key.encrypt(msg);
+  const encrypted = ec.sign(msg, key);
+  return encrypted;
+}
+
+function decryptMessage(msg: string, sig: EC.Signature, pubKey: string) {
+  const ec = new EC("secp256k1");
+  const key = ec.keyFromPublic(pubKey, "hex");
+  // const encrypted = key.encrypt(msg);
+  const decrypted = ec.verify(msg, sig, key);
+  return decrypted;
+}
 
 function encrypt(text: string, key: string) {
   const encrypted = CryptoJS.AES.encrypt(text, key).toString();
@@ -94,6 +123,14 @@ function WebSocketComponent() {
     }
   }
 
+  const { privateKey, publicKey } = generateKeys();
+  console.log("test222: ", privateKey, publicKey);
+  const msg = "hello hans";
+  const sig = encryptMessage(msg, privateKey);
+  const decMsg = decryptMessage(msg, sig, publicKey);
+
+  console.log("sig: ", sig);
+  console.log("decMsg: ", decMsg);
   return (
     <div>
       <button onClick={connectWebSocket}>Connect</button>
