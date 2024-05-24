@@ -14,12 +14,6 @@ function encrypt(text: string, key: string) {
   return encrypted;
 }
 
-// function decrypt(encryptedText: string, key: string) {
-//   const bytes = CryptoJS.AES.decrypt(encryptedText, key);
-//   const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-//   return decrypted;
-// }
-
 function SocketIoComponent() {
   const [roomId, setRoomId] = useState<string>('');
   const [secretKey, setSecretKey] = useState<string>('');
