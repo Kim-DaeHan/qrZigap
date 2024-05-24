@@ -2,6 +2,7 @@ import CryptoJS from "crypto-js";
 import "./App.css";
 import QRCodeComponent from "./QRCodeComponent";
 import WebSocketComponent from "./WebSocketComponent";
+import SocketIoComponent from "./SocketIoComponent";
 
 function App() {
   const secretKey = CryptoJS.lib.WordArray.random(32);
@@ -16,7 +17,8 @@ function App() {
       <h1>QR Code Generator</h1>
       <QRCodeComponent data={qrData} />
       <p>{qrData}</p>
-      <WebSocketComponent />
+      {/* <WebSocketComponent /> */}
+      <SocketIoComponent />
     </div>
   );
 }
