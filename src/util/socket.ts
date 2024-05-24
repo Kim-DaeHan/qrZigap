@@ -11,19 +11,18 @@ export const sendMessageToRoom = (roomId: string, message: string): void => {
   socket.emit('message', roomId, message);
 };
 
-export const sendCryptoInfo = (roomId: string, message: string): void => {
-  console.log('info: ', message);
-  const { privateKey, publicKey } = cryptoUtils.generateKeys();
-  const signature = cryptoUtils.sign(message, privateKey);
-  socket.emit('cryptoInfo', roomId, { signature, publicKey });
+export const sendReqMessage = (roomId: string): void => {
+  console.log('send request message');
+  socket.emit('requestMessage', roomId, 'Request Message');
 };
 
-export const sendAccount = (roomId: string, message: string, secretKey: string): void => {
-  const address = cryptoUtils.encrypt(message, secretKey);
-  const decrypt = cryptoUtils.decrypt(address, secretKey);
-  console.log('account: ', address);
-  console.log('decrypt: ', decrypt);
-  socket.emit('encryptedMessage', roomId, { address });
+export const sendAccount = (roomId: string, address: string): void => {
+  const message = 'Welcom to DAPP';
+  const publicKey =
+    '0428eb86d2df9a7d36c7aacecc85ef491a7158a81a1f194fd6a9207370e7536551378985d86bb18b2a797faa23567a43bf2bd9a422a0677e267124957a3f5dfdfd';
+  const signature = cryptoUtils.sign(message, '8c1e0213b608b84f5b01e4dcc71ab3801aace3287087d0148fe387cfd0a4e023');
+  const etc = '...';
+  socket.emit('cryptoInfo', roomId, { signature, publicKey, address, etc });
 };
 
 export const onMessageReceived = (type: string, callback: (message: any) => void): void => {
@@ -35,6 +34,10 @@ export const onMessageReceived = (type: string, callback: (message: any) => void
     socket.on('verify', (message: boolean) => {
       callback(message);
     });
+  } else if (type === 'sendMessage') {
+    socket.on('sendMessage', (message: string) => {
+      callback(message);
+    });
   }
 };
 
@@ -43,6 +46,8 @@ export const offMessageReceived = (type: string): void => {
     socket.off('message');
   } else if (type === 'verify') {
     socket.off('verify');
+  } else if (type === 'sendMessage') {
+    socket.off('sendMessage');
   }
 };
 
