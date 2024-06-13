@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { joinRoom, onMessageReceived, offMessageReceived, sendReqMessage, sendAccount } from './util/socket';
+import {
+  joinRoom,
+  onMessageReceived,
+  offMessageReceived,
+  sendReqMessage,
+  sendAccount,
+  sendProvide,
+} from './util/socket';
 import CryptoJS from 'crypto-js';
 
 function encrypt(text: string, key: string) {
@@ -9,7 +16,7 @@ function encrypt(text: string, key: string) {
 
 function SocketIoComponent() {
   const [roomId, setRoomId] = useState<string>('');
-  const [secretKey, setSecretKey] = useState<string>('');
+  const [sigMsg, setSigMsg] = useState<string>('');
 
   useEffect(() => {
     onMessageReceived('verify', (message: any) => {
@@ -17,8 +24,9 @@ function SocketIoComponent() {
       console.log('msg: ', typeof message);
     });
 
-    onMessageReceived('sendMessage', (message: any) => {
-      console.log('sendMessage: ', message);
+    onMessageReceived('confirmMessage', (message: any) => {
+      console.log('confirmMessage: ', message);
+      setSigMsg(message);
     });
 
     return () => {
@@ -36,8 +44,11 @@ function SocketIoComponent() {
   };
 
   const handleSendAccount = () => {
-    sendAccount(roomId, 'asdf');
-    setSecretKey('');
+    sendAccount(roomId, 'asdf login', sigMsg);
+  };
+
+  const handleSendProvide = () => {
+    sendProvide(roomId, 'asdf provide');
   };
 
   return (
@@ -49,6 +60,8 @@ function SocketIoComponent() {
       <button onClick={handleSendReqMessage}>Send Request Message</button>
       <br />
       <button onClick={handleSendAccount}>Send Account Info</button>
+      <br />
+      <button onClick={handleSendProvide}>Send Provide</button>
     </div>
   );
 }
