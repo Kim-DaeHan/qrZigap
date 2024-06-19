@@ -27,15 +27,17 @@ export const sendAccount = (roomId: string, address: string, message: string): v
   // const signature = cryptoUtils.sign(message, '98081cfbcd5663d35f64d42d20837b8241b8d990afe3bcb144aa749770d8750a');
   const signature = cryptoUtils.xphereSign(message, '98081cfbcd5663d35f64d42d20837b8241b8d990afe3bcb144aa749770d8750a');
   const network = 'xphere';
+  const nickName = 'hans';
   const etc = '...';
   console.log('message: ', message);
   console.log('signature: ', signature);
-  socket.emit('accountInfo', roomId, { signature, publicKey, address, network, etc });
+  socket.emit('accountInfo', roomId, { signature, publicKey, address, network, nickName, etc });
 };
 
 export const sendProvide = (roomId: string, address: string): void => {
   const network = 'xphere';
-  socket.emit('addressProvide', roomId, { address, network });
+  const nickName = 'hans';
+  socket.emit('addressProvide', roomId, { address, network, nickName });
 };
 
 export const onMessageReceived = (type: string, callback: (message: any) => void): void => {
