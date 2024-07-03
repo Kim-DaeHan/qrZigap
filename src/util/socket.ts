@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import cryptoUtils from './cryptoUtils';
 
-const socket: Socket = io('http://159.138.233.132:8080');
+const socket: Socket = io('ws.zigap.io');
 
 export const joinRoom = (roomId: string): void => {
   console.log('socketId: ', socket.id);
