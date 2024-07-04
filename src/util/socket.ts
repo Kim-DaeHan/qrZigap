@@ -17,6 +17,9 @@ export const sendReqMessage = (roomId: string): void => {
   console.log('send request message');
   socket.emit('requestMessage', roomId, { message: 'Request Message' });
 };
+export const sendhandleSendComplete = (roomId: string, data: object): void => {
+  socket.emit('completeMessage', roomId, data);
+};
 
 export const sendAccount = (roomId: string, address: string, message: string): void => {
   console.log('socketId: ', socket.id);
@@ -39,7 +42,9 @@ export const sendProvide = (roomId: string, address: string): void => {
   const nickName = 'hans';
   socket.emit('addressProvide', roomId, { address, network, nickName });
 };
-
+export const completeMessage = (roomId: string, data: object): void => {
+  socket.emit('completeMessage', roomId, { data });
+};
 export const onMessageReceived = (type: string, callback: (message: any) => void): void => {
   if (type === 'message') {
     socket.on('message', (message: string) => {
@@ -53,6 +58,14 @@ export const onMessageReceived = (type: string, callback: (message: any) => void
     socket.on('confirmMessage', (message: string) => {
       callback(message);
     });
+  } else if (type === 'checkVerified') {
+    socket.on('checkVerified', (message: string) => {
+      callback(message);
+    });
+  } else if (type === 'completeMessage') {
+    socket.on('completeMessage', (message: string) => {
+      callback(message);
+    });
   }
 };
 
@@ -63,6 +76,8 @@ export const offMessageReceived = (type: string): void => {
     socket.off('verify');
   } else if (type === 'confirmMessage') {
     socket.off('confirmMessage');
+  } else if (type === 'checkVerified') {
+    socket.off('checkVerified');
   }
 };
 

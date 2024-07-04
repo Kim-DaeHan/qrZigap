@@ -6,6 +6,7 @@ import {
   sendReqMessage,
   sendAccount,
   sendProvide,
+  sendhandleSendComplete,
 } from './util/socket';
 import CryptoJS from 'crypto-js';
 
@@ -17,6 +18,7 @@ function encrypt(text: string, key: string) {
 function SocketIoComponent() {
   const [roomId, setRoomId] = useState<string>('');
   const [sigMsg, setSigMsg] = useState<string>('');
+  const [checkMsg, setCheckMsg] = useState<string>('');
 
   useEffect(() => {
     onMessageReceived('verify', (message: any) => {
@@ -28,9 +30,20 @@ function SocketIoComponent() {
       console.log('confirmMessage: ', message);
       setSigMsg(message);
     });
+    onMessageReceived('checkVerified', (message: any) => {
+      console.log('checkVerified: ', message);
+      // if (message) {
+      //   completeMessage(roomId, { dapp: 'dappp', device: 'device', network: 'network', address: 'addresss' });
+      // }
 
+      setCheckMsg(message);
+    });
+    onMessageReceived('completeMessage', (message: any) => {
+      console.log('completeMessage: ', message);
+    });
     return () => {
-      offMessageReceived('verify');
+      offMessageReceived('checkVerified');
+      offMessageReceived('confirmMessage');
     };
   }, []);
 
@@ -50,7 +63,9 @@ function SocketIoComponent() {
   const handleSendProvide = () => {
     sendProvide(roomId, 'asdf provide');
   };
-
+  const handleSendComplete = () => {
+    sendhandleSendComplete(roomId, { dapp: 'dappp', device: 'device', network: 'network', address: 'addresss' });
+  };
   return (
     <div className='App'>
       <h1>여기는 ZIGAP</h1>
@@ -62,6 +77,8 @@ function SocketIoComponent() {
       <button onClick={handleSendAccount}>Send Account Info</button>
       <br />
       <button onClick={handleSendProvide}>Send Provide</button>
+      <br />
+      <button onClick={handleSendComplete}>Send handleSendComplete</button>
     </div>
   );
 }
