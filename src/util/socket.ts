@@ -20,7 +20,7 @@ export const sendMessageToRoom = (roomId: string, message: string): void => {
 export const sendReqMessage = (roomId: string): void => {
   console.log('socketId: ', socket.id);
   console.log('send request message');
-  socket.emit('requestMessage', roomId, { message: 'Request Message' });
+  socket.emit('requestMessage', roomId, { message: 'Request Message', roomId });
 };
 export const sendhandleSendComplete = (roomId: string, data: object): void => {
   socket.emit('completeMessage', roomId, data);
