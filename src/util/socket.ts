@@ -1,11 +1,16 @@
 import { io, Socket } from 'socket.io-client';
 import cryptoUtils from './cryptoUtils';
 
-const socket: Socket = io('ws.zigap.io');
+const socket: Socket = io('http://localhost:8090/');
 
 export const joinRoom = (roomId: string): void => {
   console.log('socketId: ', socket.id);
   socket.emit('joinRoom', roomId);
+};
+
+export const paymentJoinRoom = (roomId: string): void => {
+  console.log('socketId: ', socket.id);
+  socket.emit('paymentJoinRoom', roomId);
 };
 
 export const sendMessageToRoom = (roomId: string, message: string): void => {
@@ -42,9 +47,23 @@ export const sendProvide = (roomId: string, address: string): void => {
   const nickName = 'hans';
   socket.emit('addressProvide', roomId, { address, network, nickName });
 };
+
 export const completeMessage = (roomId: string, data: object): void => {
   socket.emit('completeMessage', roomId, { data });
 };
+
+export const sendHealthCheck = (roomId: string): void => {
+  const message = 'ping';
+  socket.emit('healthCheck', roomId, { message });
+};
+
+export const sendTransactionResult = (roomId: string): void => {
+  const from = 'aaaaaaaa';
+  const txHash = 'ajdfklajsdlf';
+  const status = 'success';
+  socket.emit('transactionInfo', roomId, { from, txHash, status });
+};
+
 export const onMessageReceived = (type: string, callback: (message: any) => void): void => {
   if (type === 'message') {
     socket.on('message', (message: string) => {
@@ -64,6 +83,10 @@ export const onMessageReceived = (type: string, callback: (message: any) => void
     });
   } else if (type === 'completeMessage') {
     socket.on('completeMessage', (message: string) => {
+      callback(message);
+    });
+  } else if (type === 'responding') {
+    socket.on('responding', (message: string) => {
       callback(message);
     });
   }

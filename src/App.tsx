@@ -1,10 +1,12 @@
 import './App.css';
+import PaymentSocketIoComponent from './PaymentSocketIoComponent';
 import SocketIoComponent from './SocketIoComponent';
 
 function App() {
   return (
     <div>
-      <SocketIoComponent />
+      {/* <SocketIoComponent /> */}
+      <PaymentSocketIoComponent />
     </div>
   );
 }
